@@ -1,0 +1,109 @@
+img
+{
+	width: 100%;
+}
+
+.clr
+{
+	clear: both;
+}
+
+.delete-button
+{
+	float: right;
+}
+
+.left-float
+{
+	float: left;
+}
+
+.main-container
+{
+	margin: 1.5% 5%;
+	width: 90%;
+}
+
+.image-description
+{
+	text-align: center;
+}
+
+.active-top-button
+{
+	left: 25px;
+}
+
+
+
+.menu
+{
+    background-color: #f4f4f4;
+    color: #333;
+    border: 1px solid #aaa;
+    box-shadow: 2px 2px 2px #999;
+    border-radius: 0.2rem;
+    list-style: none;
+    position: fixed;
+}
+
+.menu.off
+{
+    top: -200%;
+    left: -200%;
+}
+
+.menu-item
+{
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    font-weight: 100;
+    padding: 0 1rem;
+    cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:active
+{
+    color: #000;
+    font-weight: 500;
+}
+
+
+
+
+#on-top
+{
+	transition: all .25s ease;
+	position: fixed;
+	z-index: 15;
+	bottom: 25px;
+	right: -100px;
+	cursor: pointer;
+}
+
+@media(min-width: 1200px)
+{
+	
+}
+
+@media(min-width: 992px and max-width: 1199px)
+{
+
+}
+
+@media(min-width: 768px and max-width: 991px)
+{
+
+}
+
+@media(min-width: 576px and max-width: 767px)
+{
+
+}
+
+@media(max-width: 575px)
+{
+
+}
