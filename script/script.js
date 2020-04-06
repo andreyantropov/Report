@@ -1,15 +1,85 @@
-/*Глобальные переменные*/
-var selectedTable;
-var selectedRow;
-var selectedCol;
-
 window.onload = function () 
 {
-	/*Процедура, отслеживающая обновление документа
-	Обновляет список элементов с прослушивающимися сигналами*/
-	document.getElementById("report-container").onclick = function()
+	/*Глобальные переменные*/
+	let selectedTable, selectedRow, selectedCol
+
+	let menu = document.getElementById('menu');
+	let box = document.getElementsByClassName('table');
+	
+	/*Процедура нажатия на кнопку "Удалить"
+	Выводит окно подтверждения операции. Если пользователь
+	подтверждает удаление, то удаляет родительский элемент*/
+	function createDeleteButtonEventListener()
 	{
-		/*Процедура загрузки картинки на сайт*/
+		document.getElementsByName("delete-button").forEach(function(item) 
+		{
+			item.addEventListener("click", function()
+			{
+				if(confirm("Вы точно хотите удалить этот элемент?"))
+				{
+					item.parentNode.parentNode.removeChild(item.parentNode);
+				}
+			});
+		});	
+	}
+	
+	/*Процедура, скрывающая выпадающее меню*/
+	document.addEventListener('click', function(ev)
+	{
+		menu.classList.add('off');
+		menu.style.top = '-200%';
+		menu.style.left = '-200%';
+	});
+	
+	/*Процедура, добавляющая в документ кнопку "Вверх, если пользователь
+	пролистал документ вниз"*/
+	document.defaultView.onscroll = function()
+	{
+		if(document.documentElement.scrollTop > document.documentElement.clientHeight) 
+			document.getElementById("on-top").classList.add("active-top-button"); 
+		else 
+			document.getElementById("on-top").classList.remove("active-top-button");
+	}
+	
+	/*Процедура пролистывания страницы вверх при нажатии
+	на кнопку "Вверх"*/
+	document.getElementById("on-top").onclick = function()
+	{
+		document.defaultView.scrollTo(0, 0);
+	}
+	
+	/*Процедура нажатия на кнопку "Добавить текст"
+	Добавляет в конце документа текстовое поле с заголовком*/
+	document.getElementById("create-text").onclick = function()
+	{
+		//Создаем контейнер с текстовыми полями
+		let div = document.createElement("div");
+		div.className = "main-container";
+		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable><h2>*Введите заголовок*</h2><p>*Введите текст*</p></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
+		//Добавляем конейнер в документ
+		document.getElementById("clr").before(div);
+		//Добавляем прослушивание событий
+		createDeleteButtonEventListener();
+	}
+	
+	/*Процедура нажатия на кнопку "Добавить картинку"
+	Добавляет в конце документа текстовое поле с заголовком*/
+	document.getElementById("create-image").onclick = function()
+	{
+		//Создаем контейнер для выбора картинки
+		let div = document.createElement("div");
+		div.className = "main-container";
+		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-img' type='file' accept='image/*'><img></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
+		//Добавляем конейнер в документ
+		document.getElementById("clr").before(div);
+		//Добавляем прослушивание событий
+		createImgEventListener();
+		createDeleteButtonEventListener();
+	}
+	
+	/*Процедура загрузки картинки на сайт*/
+	function createImgEventListener()
+	{
 		document.getElementsByName("load-img").forEach(function(item) 
 		{
 			item.addEventListener("change", function()
@@ -33,128 +103,6 @@ window.onload = function ()
 				reader.readAsDataURL(event.target.files[0]);
 			});
 		});
-		
-		/*Процедура загрузки таблицы Excel на сайт*/
-		document.getElementsByName("load-xml").forEach(function(item) 
-		{
-			item.addEventListener("change", function()
-			{
-				let reader = new FileReader();
-				reader.onload = function()
-				{
-					//Добавляем таблицу Excel
-					let xml = item.parentNode.getElementsByClassName("excel-container")[0];
-					xml.innerHTML = reader.result;
-				}
-				reader.readAsText(event.target.files[0]);
-			});
-		});
-		
-		/*Процедура нажатия на кнопку "Удалить"
-		Выводит окно подтверждения операции. Если пользователь
-		подтверждает удаление, то удаляет родительский элемент*/
-		document.getElementsByName("delete-button").forEach(function(item) 
-		{
-			item.addEventListener("click", function()
-			{
-				if(confirm("Вы точно хотите удалить этот элемент?"))
-				{
-					item.parentNode.parentNode.removeChild(item.parentNode);
-				}
-			});
-		});	
-	}
-	
-	document.getElementById("report-container").oncontextmenu = function()
-	{
-		/*Сигналы выпадающего меню*/
-		let menu = document.getElementById('menu');
-		menu.addEventListener('mouseleave', function(ev)
-		{
-			menu.classList.add('off');
-			menu.style.top = '-200%';
-			menu.style.left = '-200%';
-		});
-		
-		/*Сигналы таблицы*/
-		/*let box = document.getElementsByClassName('table');
-		for(let i = 0; i < box.length; i++)
-			box[i].addEventListener('contextmenu', showmenu);*/
-		
-		let box = document.getElementsByClassName('table');
-		for(let i = 0; i < box.length; i++)
-		{
-			box[i].addEventListener('contextmenu', function(ev)
-			{
-				selectedTable = box[i];
-				selectedRow = ev.target.parentNode.rowIndex;
-				selectedCol = ev.target.cellIndex;
-				
-				ev.preventDefault(); 
-				menu.style.top = `${ev.clientY - 20}px`;
-				menu.style.left = `${ev.clientX - 20}px`;
-				menu.classList.remove('off');
-			});
-		}
-            
-		//add the listeners for the menu items
-		//addMenuListeners();
-        
-		/*function addMenuListeners()
-		{
-			document.getElementById('red').addEventListener('click', setColour);
-			document.getElementById('gold').addEventListener('click', setColour);
-			document.getElementById('green').addEventListener('click', setColour);
-		}*/
-        
-		/*function setColour(ev)
-		{
-			hidemenu();
-			let clr = ev.target.id;
-			document.getElementById('box').style.backgroundColor = clr;
-		}*/
-        
-		/*function showmenu(ev)
-		{
-			//stop the real right click menu
-			ev.preventDefault(); 
-			//show the custom menu
-			console.log( ev.clientX, ev.clientY );
-			menu.style.top = `${ev.clientY - 20}px`;
-			menu.style.left = `${ev.clientX - 20}px`;
-			menu.classList.remove('off');
-		}*/
-        
-		/*function hidemenu(ev)
-		{
-			menu.classList.add('off');
-			menu.style.top = '-200%';
-			menu.style.left = '-200%';
-		}*/
-	}
-	
-	/*Процедура нажатия на кнопку "Добавить текст"
-	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-text").onclick = function()
-	{
-		//Создаем контейнер с текстовыми полями
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable><h2>*Введите заголовок*</h2><p>*Введите текст*</p></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
-	}
-	
-	/*Процедура нажатия на кнопку "Добавить картинку"
-	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-image").onclick = function()
-	{
-		//Создаем контейнер для выбора картинки
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-img' type='file' accept='image/*'><img></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
 	}
 	
 	/*Процедура нажатия на кнопку "Создать таблицу"
@@ -194,35 +142,30 @@ window.onload = function ()
 		div.innerHTML = table.join('\n');
 		//Добавляем таблицу в документ
 		document.getElementById("clr").before(div);
+		//Добавляем прослушивание событий
+		createTableEventListener();
+		createDeleteButtonEventListener();
 	}
 	
-	/*Процедура нажатия на кнопку "Добавить картинку"
-	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-excel-table").onclick = function()
+	/*Процедура, добавляющая пользовательское выпадающее
+	меню в таблицы пользователя*/
+	function createTableEventListener()
 	{
-		//Создаем контейнер для выбора картинки
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-xml' type='file' accept='text/html'><div class = 'excel-container'></div></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
-	}
-	
-	/*Процедура, добавляющая в документ кнопку "Вверх, если пользователь
-	пролистал документ вниз"*/
-	document.defaultView.onscroll = function()
-	{
-		if(document.documentElement.scrollTop > document.documentElement.clientHeight) 
-			document.getElementById("on-top").classList.add("active-top-button"); 
-		else 
-			document.getElementById("on-top").classList.remove("active-top-button");
-	}
-
-	/*Процедура пролистывания страницы вверх при нажатии
-	на кнопку "Вверх"*/
-	document.getElementById("on-top").onclick = function()
-	{
-		document.defaultView.scrollTo(0, 0);
+		box = document.getElementsByClassName('table');
+		for(let i = 0; i < box.length; i++)
+		{
+			box[i].addEventListener('contextmenu', function(ev)
+			{
+				selectedTable = box[i];
+				selectedRow = ev.target.parentNode.rowIndex;
+				selectedCol = ev.target.cellIndex;
+				
+				ev.preventDefault(); 
+				menu.style.top = `${ev.clientY - 20}px`;
+				menu.style.left = `${ev.clientX - 20}px`;
+				menu.classList.remove('off');
+			});
+		}
 	}
 	
 	/*Процедура добавления строки в таблицу*/
@@ -247,12 +190,11 @@ window.onload = function ()
 		//Создаем новый столбец
 		let newColHeader = document.createElement("th");
 		newColHeader.scope = "col";
-		let newCol = document.createElement("td");
 		//Добавляем столбец в таблицу
 		selectedTable.rows[0].cells[selectedCol].after(newColHeader);
 		for(let i = 1; i < selectedTable.rows.length; i++)
 		{
-			selectedTable.rows[i].cells[selectedCol].after(newCol);
+			selectedTable.rows[i].cells[selectedCol].after(document.createElement("td"));
 		}
 	}
 	
@@ -269,6 +211,40 @@ window.onload = function ()
 		{
 			selectedTable.rows[i].deleteCell(selectedCol);
 		}
+	}
+	
+	/*Процедура нажатия на кнопку "Добавить таблицу Excel"
+	Добавляет в конце документа текстовое поле с заголовком*/
+	document.getElementById("create-excel-table").onclick = function()
+	{
+		//Создаем контейнер для выбора картинки
+		let div = document.createElement("div");
+		div.className = "main-container";
+		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-xml' type='file' accept='text/html'><div class = 'excel-container'></div></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
+		//Добавляем конейнер в документ
+		document.getElementById("clr").before(div);
+		//Добавляем прослушивание событий
+		createExcelEventListener();
+		createDeleteButtonEventListener();
+	}
+	
+	/*Процедура загрузки таблицы Excel на сайт*/
+	function createExcelEventListener()
+	{
+		document.getElementsByName("load-xml").forEach(function(item) 
+		{
+			item.addEventListener("change", function()
+			{
+				let reader = new FileReader();
+				reader.onload = function()
+				{
+					//Добавляем таблицу Excel
+					let xml = item.parentNode.getElementsByClassName("excel-container")[0];
+					xml.innerHTML = reader.result;
+				}
+				reader.readAsText(event.target.files[0]);
+			});
+		});
 	}
 }
 
