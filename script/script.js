@@ -1,7 +1,8 @@
 window.onload = function () 
 {
 	/*Глобальные переменные*/
-	let selectedTable, selectedRow, selectedCol
+	let selectedTable, selectedRow, selectedCol;
+	let buffer;
 
 	let menu = document.getElementById('menu');
 	let box = document.getElementsByClassName('table');
@@ -166,6 +167,18 @@ window.onload = function ()
 				menu.classList.remove('off');
 			});
 		}
+	}
+	
+	/*Процедура копирования данных в буфер обмена*/
+	document.getElementById("copy").onclick = function()
+	{
+		buffer = selectedTable.rows[selectedRow].cells[selectedCol].innerHTML;
+	}
+	
+	/*Процедура вставки данных*/
+	document.getElementById("paste").onclick = function()
+	{
+		selectedTable.rows[selectedRow].cells[selectedCol].innerHTML = buffer;
 	}
 	
 	/*Процедура добавления строки в таблицу*/
