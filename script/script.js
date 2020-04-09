@@ -1,7 +1,7 @@
 window.onload = function () 
 {
 	/*Глобальные переменные*/
-	let selectedTable, selectedRow, selectedCol;
+	let $selectedTable, $selectedCell;
 	let buffer;
 
 	let menu = document.getElementById('menu');
@@ -12,94 +12,76 @@ window.onload = function ()
 	подтверждает удаление, то удаляет родительский элемент*/
 	function createDeleteButtonEventListener()
 	{
-		document.getElementsByName("delete-button").forEach(function(item) 
-		{
-			item.addEventListener("click", function()
-			{
+		$(".delete-button").each(function(){
+			$(this).on("click", function(){
 				if(confirm("Вы точно хотите удалить этот элемент?"))
-				{
-					item.parentNode.parentNode.removeChild(item.parentNode);
-				}
+					$(this).parent().parent().remove();
 			});
 		});	
 	}
 	
-	/*Процедура, скрывающая выпадающее меню*/
-	document.addEventListener('click', function(ev)
-	{
-		menu.classList.add('off');
-		menu.style.top = '-200%';
-		menu.style.left = '-200%';
-	});
-	
 	/*Процедура, добавляющая в документ кнопку "Вверх, если пользователь
 	пролистал документ вниз"*/
-	document.defaultView.onscroll = function()
-	{
-		if(document.documentElement.scrollTop > document.documentElement.clientHeight) 
-			document.getElementById("on-top").classList.add("active-top-button"); 
+	$(window).on("scroll", function(){
+		if($(this).scrollTop() > $(this).height()) 
+			$("#on-top").addClass("active-top-button"); 
 		else 
-			document.getElementById("on-top").classList.remove("active-top-button");
-	}
+			$("#on-top").removeClass("active-top-button");
+	});
 	
 	/*Процедура пролистывания страницы вверх при нажатии
 	на кнопку "Вверх"*/
-	document.getElementById("on-top").onclick = function()
-	{
-		document.defaultView.scrollTo(0, 0);
-	}
+	$("#on-top").on("click", function(){
+		$("html, body").animate({scrollTop: 0}, 500);
+	});
 	
 	/*Процедура нажатия на кнопку "Добавить текст"
 	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-text").onclick = function()
-	{
-		//Создаем контейнер с текстовыми полями
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable><h2>*Введите заголовок*</h2><p>*Введите текст*</p></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
+	$("#create-text").on("click", function(){				
+		$("#clr")
+			.before("<div class = 'main-container'>" +
+					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
+					"<h2>*Введите заголовок*</h2>" +
+					"<p>*Введите текст*</p>" +
+					"</div>" +
+					"<div class = 'delete-button-container'>" +
+					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+					"</div>" +
+				     "</div>");
 		//Добавляем прослушивание событий
 		createDeleteButtonEventListener();
-	}
+	});
 	
 	/*Процедура нажатия на кнопку "Добавить картинку"
 	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-image").onclick = function()
-	{
-		//Создаем контейнер для выбора картинки
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-img' type='file' accept='image/*'><img></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
+	$("#create-image").on("click", function(){						  				
+		$("#clr")
+			.before("<div class = 'main-container'>" +
+					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+					"<input class = 'load-img' name = 'load-img' type='file' accept='image/*'>" +
+					"<img>" +
+					"</div>" +
+					"<div class = 'delete-button-container'>" +
+					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+					"</div>" +
+					"</div>");
 		//Добавляем прослушивание событий
 		createImgEventListener();
 		createDeleteButtonEventListener();
-	}
+	});
 	
 	/*Процедура загрузки картинки на сайт*/
-	function createImgEventListener()
-	{
-		document.getElementsByName("load-img").forEach(function(item) 
-		{
-			item.addEventListener("change", function()
-			{
+	function createImgEventListener(){
+		$(".load-img").each(function(){
+			$(this).on("change", function(){
+				let $input = $(this);
 				let reader = new FileReader();
-				reader.onload = function()
-				{
-					//Добавляем картинку
-					let img = item.parentNode.getElementsByTagName("img")[0];
-					img.src = reader.result;
-					//Добавляем строку с описанием
-					if(!item.parentNode.getElementsByTagName("p").length)
-					{
-						let description = document.createElement("p");
-						description.className = "image-description";
-						description.contentEditable = true;
-						description.innerHTML = "*Введите комментарий*";
-						img.after(description);
-					}
+				reader.onload = function(){
+					let $img = $input.parent().children("img")[0];
+					$img.src = reader.result;
+					if(!$input.parent().children("p").length)
+						$input.parent()
+							.append("<p class = 'image-description' contentEditable>*Введите комментарий*</p>");
 				}
 				reader.readAsDataURL(event.target.files[0]);
 			});
@@ -109,8 +91,7 @@ window.onload = function ()
 	/*Процедура нажатия на кнопку "Создать таблицу"
 	Открывает модальное окно ввода строк и столбцов и создает по
 	этим данным соответствующую таблицу*/
-	document.getElementById("create-table").onclick = function()
-	{
+	$("#create-table").on("click", function(){
 		//Считывание строк и полей
 		let rows = prompt("Кол-во строк:", 3);
 		let cols = prompt("Кол-во столбцов:", 3);
@@ -121,139 +102,133 @@ window.onload = function ()
 			return;
 		}
 		//Создаем таблицу
-		let table = ["<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable><table class = 'table table-bordered'><thead class='thead-dark'><tr><th scope='col'></th>"];
+		let table = "<div class = 'main-container'>" +
+					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
+					"<table class = 'table table-bordered'>" +
+					"<thead class='thead-dark'>" +
+					"<tr>";	
 		for(i = 0; i < cols; i++)
-		{
-			table.push("<th scope='col'></th>");
-		}
-		table.push("</tr></thead><tbody>")
-		for(i = 0; i < rows; i++)
-		{
-			table.push("<tr><th scope = 'row'></th>");
+			table += "<th scope='col'></th>";					 
+		table += "</tr>" +
+				 "</thead>" +
+				 "<tbody>";				 
+		for(i = 0; i < rows; i++){
+			table += "<tr>";
 			for(j = 0; j < cols; j++)
-			{
-				table.push("<td></td>");
-			}
-			table.push("</tr>");
-		}
-		table.push("</tbody></table></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>");
-		//Создаем контейнер с текстовыми полями
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = table.join('\n');
-		//Добавляем таблицу в документ
-		document.getElementById("clr").before(div);
+				table += "<td></td>";
+			table += "</tr>";
+		}				
+		table += "</tbody>" +
+				 "</table>" +
+				 "</div>" +
+				 "<div class = 'delete-button-container'>" + 
+				 "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				 "</div>" +
+				 "</div>";
+		//Добавляем таблицу на страничку
+		$("#clr")
+			.before(table);			
 		//Добавляем прослушивание событий
 		createTableEventListener();
 		createDeleteButtonEventListener();
-	}
+	});
 	
 	/*Процедура, добавляющая пользовательское выпадающее
 	меню в таблицы пользователя*/
 	function createTableEventListener()
 	{
-		box = document.getElementsByClassName('table');
-		for(let i = 0; i < box.length; i++)
-		{
-			box[i].addEventListener('contextmenu', function(ev)
-			{
-				selectedTable = box[i];
-				selectedRow = ev.target.parentNode.rowIndex;
-				selectedCol = ev.target.cellIndex;
+		$("td, th").each(function(){
+			$(this).on("contextmenu", function(ev){
+				$selectedTable = $(this).parent().parent().parent();
+				$selectedCell = $(this);
 				
-				ev.preventDefault(); 
-				menu.style.top = `${ev.clientY - 20}px`;
-				menu.style.left = `${ev.clientX - 20}px`;
-				menu.classList.remove('off');
-			});
-		}
+				ev.preventDefault();
+				$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
+			})
+		});
 	}
+	
+	/*Процедура, скрывающая выпадающее меню*/
+	$(document).on('click', function(){
+		$("#menu").offset({top: -1000, left: -1000});
+	});
 	
 	/*Процедура копирования данных в буфер обмена*/
-	document.getElementById("copy").onclick = function()
-	{
-		buffer = selectedTable.rows[selectedRow].cells[selectedCol].innerHTML;
-	}
+	$("#copy").on("click", function(){
+		buffer = $selectedCell.html();
+	});
 	
 	/*Процедура вставки данных*/
-	document.getElementById("paste").onclick = function()
-	{
-		selectedTable.rows[selectedRow].cells[selectedCol].innerHTML = buffer;
-	}
+	$("#paste").on("click", function(){
+		$selectedCell
+			.append(buffer);
+	});
 	
 	/*Процедура добавления строки в таблицу*/
-	document.getElementById("add-row").onclick = function()
-	{
-		//Создаем новую строку
-		let newRow = document.createElement("tr");
-		let newRowInner = "<tr><th scope = 'row'></th>";
-		for(let i = 0; i < selectedTable.rows[0].cells.length - 1; i++)
-		{
-			newRowInner += "<td></td>";
-		}
-		newRowInner += "</tr>";
-		newRow.innerHTML = newRowInner;
-		//Добавляем строку в таблицу
-		selectedTable.rows[selectedRow].after(newRow);
-	}
+	$("#add-row").on("click", function(){
+		let newRow;
+		for(let i = 0; i < $selectedCell.parent().children().length; i++)
+			newRow += "<td></td>";
+		$selectedCell.parent()
+			.after("<tr>" + newRow + "</tr>");
+	});
 	
 	/*Процедура добавления столбца в таблицу*/
-	document.getElementById("add-col").onclick = function()
-	{
-		//Создаем новый столбец
-		let newColHeader = document.createElement("th");
-		newColHeader.scope = "col";
-		//Добавляем столбец в таблицу
-		selectedTable.rows[0].cells[selectedCol].after(newColHeader);
-		for(let i = 1; i < selectedTable.rows.length; i++)
-		{
-			selectedTable.rows[i].cells[selectedCol].after(document.createElement("td"));
-		}
-	}
+	$("#add-col").on("click", function(){
+		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
+		$selectedTable.find("tr").each(function(){
+			let $newCell = $(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").clone().empty();
+			$(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").after($newCell);
+		});
+	});
 	
 	/*Процедура удаления строки из таблицы*/
-	document.getElementById("remove-row").onclick = function()
-	{
-		selectedTable.deleteRow(selectedRow);
-	}
+	$("#remove-row").on("click", function(){
+		$selectedCell.parent().remove();
+	});
 	
 	/*Процедура удаления столбца из таблицы*/
-	document.getElementById("remove-col").onclick = function()
-	{
-		for(let i = 0; i < selectedTable.rows.length; i++)
-		{
-			selectedTable.rows[i].deleteCell(selectedCol);
-		}
-	}
+	$("#remove-col").on("click", function(){
+		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
+		$selectedTable.find("tr").each(function(){
+			$(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").remove();
+		});
+	});
 	
 	/*Процедура нажатия на кнопку "Добавить таблицу Excel"
 	Добавляет в конце документа текстовое поле с заголовком*/
-	document.getElementById("create-excel-table").onclick = function()
-	{
-		//Создаем контейнер для выбора картинки
-		let div = document.createElement("div");
-		div.className = "main-container";
-		div.innerHTML = "<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'><input name = 'load-xml' type='file' accept='text/html'><div class = 'excel-container'></div></div><button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>";
-		//Добавляем конейнер в документ
-		document.getElementById("clr").before(div);
+	$("#create-excel-table").on("click", function(){
+		$("#clr")
+			.before("<div class = 'main-container'>" +
+					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+					"<input class = 'load-xml' name = 'load-img' type='file' accept='text/html'>" +
+					"<div class = 'excel-container'></div>" +
+					"</div>" +
+					"<div class = 'delete-button-container'>" +
+					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+					"</div>" +
+					"</div>");
+		/*$("#clr")
+		.before($("<div class = 'main-container'></div>")
+			    .append($("<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable></div>")
+					    .append($("<input class = 'load-xml' name = 'load-xml' type='file' accept='text/html'>"))
+						.append($("<div class = 'excel-container'></div>")))
+				.append($("<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>")));*/
 		//Добавляем прослушивание событий
 		createExcelEventListener();
 		createDeleteButtonEventListener();
-	}
+	});
 	
 	/*Процедура загрузки таблицы Excel на сайт*/
-	function createExcelEventListener()
-	{
-		document.getElementsByName("load-xml").forEach(function(item) 
-		{
-			item.addEventListener("change", function()
-			{
+	function createExcelEventListener(){
+		$(".load-xml").each(function(){
+			$(this).on("change", function(){
+				let $input = $(this);
 				let reader = new FileReader();
-				reader.onload = function()
-				{
-					//Добавляем таблицу Excel
-					let xml = item.parentNode.getElementsByClassName("excel-container")[0];
-					xml.innerHTML = reader.result;
+				reader.onload = function(){
+					let $xml = $input.parent().children(".excel-container")[0];
+					$($xml)
+						.append(reader.result);
 				}
 				reader.readAsText(event.target.files[0]);
 			});

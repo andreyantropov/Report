@@ -1,43 +1,37 @@
-img
-{
+img{
 	width: 100%;
 }
 
-.clr
-{
+table{
+	table-layout: fixed;
+}
+
+.clr{
 	clear: both;
 }
 
-.delete-button
-{
-	float: right;
-}
-
-.left-float
-{
+.left-float{
 	float: left;
 }
 
-.main-container
-{
+.main-container{
 	margin: 1.5% 5%;
 	width: 90%;
 }
 
-.
+.delete-button-container{
+	text-align: right;
+}
 
-.image-description
-{
+.image-description{
 	text-align: center;
 }
 
-.active-top-button
-{
+.active-top-button{
 	left: 25px;
 }
 
-.menu
-{
+.menu{
     background-color: #f4f4f4;
     color: #333;
     border: 1px solid #aaa;
@@ -48,14 +42,12 @@ img
     position: fixed;
 }
 
-.menu.off
-{
+.menu.off{
     top: -200%;
     left: -200%;
 }
 
-.menu-item
-{
+.menu-item{
     height: 1.5rem;
     line-height: 1.5rem;
     font-size: 1rem;
@@ -65,46 +57,37 @@ img
 }
 
 .menu-item:hover,
-.menu-item:active
-{
+.menu-item:active{
     color: #000;
     font-weight: 500;
 }
 
-
-
-
-#on-top
-{
+#on-top{
 	transition: all .25s ease;
 	position: fixed;
 	z-index: 15;
 	bottom: 25px;
-	right: -100px;
+	right: -100%;
 	cursor: pointer;
+	width: 30%;
 }
 
-@media(min-width: 1200px)
-{
+@media(min-width: 1200px){
 	
 }
 
-@media(min-width: 992px and max-width: 1199px)
-{
+@media(min-width: 992px and max-width: 1199px){
 
 }
 
-@media(min-width: 768px and max-width: 991px)
-{
+@media(min-width: 768px and max-width: 991px){
 
 }
 
-@media(min-width: 576px and max-width: 767px)
-{
+@media(min-width: 576px and max-width: 767px){
 
 }
 
-@media(max-width: 575px)
-{
+@media(max-width: 575px){
 
 }
