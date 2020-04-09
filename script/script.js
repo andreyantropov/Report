@@ -3,9 +3,6 @@ window.onload = function ()
 	/*Глобальные переменные*/
 	let $selectedTable, $selectedCell;
 	let buffer;
-
-	let menu = document.getElementById('menu');
-	let box = document.getElementsByClassName('table');
 	
 	/*Процедура нажатия на кнопку "Удалить"
 	Выводит окно подтверждения операции. Если пользователь
@@ -40,7 +37,7 @@ window.onload = function ()
 	$("#create-text").on("click", function(){				
 		$("#clr")
 			.before("<div class = 'main-container'>" +
-					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
+					"<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
 					"<h2>*Введите заголовок*</h2>" +
 					"<p>*Введите текст*</p>" +
 					"</div>" +
@@ -57,7 +54,7 @@ window.onload = function ()
 	$("#create-image").on("click", function(){						  				
 		$("#clr")
 			.before("<div class = 'main-container'>" +
-					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+					"<div class = 'img-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 					"<input class = 'load-img' name = 'load-img' type='file' accept='image/*'>" +
 					"<img>" +
 					"</div>" +
@@ -103,7 +100,7 @@ window.onload = function ()
 		}
 		//Создаем таблицу
 		let table = "<div class = 'main-container'>" +
-					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
+					"<div class = 'table-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
 					"<table class = 'table table-bordered'>" +
 					"<thead class='thead-dark'>" +
 					"<tr>";	
@@ -137,6 +134,7 @@ window.onload = function ()
 	меню в таблицы пользователя*/
 	function createTableEventListener()
 	{
+		//Отображаем меню при нажатии ПКМ по таблице
 		$("td, th").each(function(){
 			$(this).on("contextmenu", function(ev){
 				$selectedTable = $(this).parent().parent().parent();
@@ -144,11 +142,11 @@ window.onload = function ()
 				
 				ev.preventDefault();
 				$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
-			})
+			});
 		});
 	}
 	
-	/*Процедура, скрывающая выпадающее меню*/
+	/*Процедура, скрывающая выпадающее меню при нажатии ЛКМ*/
 	$(document).on('click', function(){
 		$("#menu").offset({top: -1000, left: -1000});
 	});
@@ -200,7 +198,7 @@ window.onload = function ()
 	$("#create-excel-table").on("click", function(){
 		$("#clr")
 			.before("<div class = 'main-container'>" +
-					"<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+					"<div class = 'excel-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 					"<input class = 'load-xml' name = 'load-img' type='file' accept='text/html'>" +
 					"<div class = 'excel-container'></div>" +
 					"</div>" +
@@ -208,12 +206,6 @@ window.onload = function ()
 					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
 					"</div>" +
 					"</div>");
-		/*$("#clr")
-		.before($("<div class = 'main-container'></div>")
-			    .append($("<div class = 'col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable></div>")
-					    .append($("<input class = 'load-xml' name = 'load-xml' type='file' accept='text/html'>"))
-						.append($("<div class = 'excel-container'></div>")))
-				.append($("<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>")));*/
 		//Добавляем прослушивание событий
 		createExcelEventListener();
 		createDeleteButtonEventListener();
