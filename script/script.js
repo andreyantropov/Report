@@ -1,6 +1,6 @@
 $(window).on("load", function(){
 	/*Глобальные переменные*/
-	let $selectedTable, $selectedCell;                                         
+	let $selectedTable, $selectedCell;   
 	let buffer;
 	
 	/*Процедура нажатия на кнопку "Удалить"
@@ -11,11 +11,14 @@ $(window).on("load", function(){
 		$(".delete-button").each(function(){
 			if(!checkEvent($(this), "click")){
 				$(this).on("click", function(){
-					if(confirm("Вы точно хотите удалить этот элемент?"))
+					if(confirm("Вы точно хотите удалить этот элемент?")){
+						$("#last").removeAttr("id");
+						$(this).parent().parent().prev().attr("id", "last");
 						$(this).parent().parent().remove();
+					}
 				});
 			}
-		});	
+		});
 	}
 	
 	/*Процедура, добавляющая в документ кнопку "Вверх, если пользователь
@@ -33,38 +36,53 @@ $(window).on("load", function(){
 		$("html, body").animate({scrollTop: 0}, 500);
 	});
 	
+	/*Процедура, устанавливающая на выбранном элементе флаг last
+	P.S. добавление новых элементов идет после элемента с флагом last*/
+	function setContainer(){
+		$(".main-container").each(function(){
+			if(!checkEvent($(this), "focusin")){
+				$(this).on("focusin", function(){
+					$("#last").removeAttr("id");
+					$(this).attr("id", "last");
+				});
+			}
+		});
+	}
+	
 	/*Процедура нажатия на кнопку "Добавить текст"
 	Добавляет в конце документа текстовое поле с заголовком*/
-	$("#create-text").on("click", function(){				
-		$("#clr")
-			.before("<div class = 'main-container'>" +
-					"<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
-					"<h2>*Введите заголовок*</h2>" +
-					"<p>*Введите текст*</p>" +
-					"</div>" +
-					"<div class = 'delete-button-container'>" +
-					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
-					"</div>" +
-				     "</div>");
+	$("#create-text").on("click", function(){
+		$("#last").removeAttr("id")
+			.after("<div class = 'main-container' id = 'last'>" +
+				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
+				   "<h2>*Введите заголовок*</h2>" +
+				   "<p>*Введите текст*</p>" +
+				   "</div>" +
+				   "<div class = 'delete-button-container'>" +
+				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "</div>" +
+				   "</div>");
 		//Добавляем прослушивание событий
+		setContainer();
 		createDeleteButtonEventListener();
 	});
 	
 	/*Процедура нажатия на кнопку "Добавить картинку"
 	Добавляет в конце документа текстовое поле с заголовком*/
 	$("#create-image").on("click", function(){						  				
-		$("#clr")
-			.before("<div class = 'main-container'>" +
-					"<div class = 'img-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-					"<input class = 'load-img' name = 'load-img' type='file' accept='image/*'>" +
-					"<img>" +
-					"</div>" +
-					"<div class = 'delete-button-container'>" +
-					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
-					"</div>" +
-					"</div>");
+		$("#last").removeAttr("id")
+			.after("<div class = 'main-container' id = 'last'>" +
+				   "<div class = 'img-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+				   "<input class = 'load-img' name = 'load-img' type='file' accept='image/*'>" +
+				   "<img>" +
+				   "</div>" +
+				   "<div class = 'delete-button-container'>" +
+				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "</div>" +
+				   "</div>");
 		//Добавляем прослушивание событий
 		createImgEventListener();
+		setContainer();
 		createDeleteButtonEventListener();
 	});
 	
@@ -102,7 +120,7 @@ $(window).on("load", function(){
 			return;
 		}
 		//Создаем таблицу
-		let table = "<div class = 'main-container'>" +
+		let table = "<div class = 'main-container' id = 'last'>" +
 					"<div class = 'table-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12' contenteditable>" +
 					"<table class = 'table table-bordered'>" +
 					"<thead class='thead-dark'>" +
@@ -126,10 +144,11 @@ $(window).on("load", function(){
 				 "</div>" +
 				 "</div>";
 		//Добавляем таблицу на страничку
-		$("#clr")
-			.before(table);			
+		$("#last").removeAttr("id")
+			.after(table);			
 		//Добавляем прослушивание событий
 		createTableEventListener();
+		setContainer();
 		createDeleteButtonEventListener();
 	});
 	
@@ -201,18 +220,19 @@ $(window).on("load", function(){
 	/*Процедура нажатия на кнопку "Добавить таблицу Excel"
 	Добавляет в конце документа текстовое поле с заголовком*/
 	$("#create-excel-table").on("click", function(){
-		$("#clr")
-			.before("<div class = 'main-container'>" +
-					"<div class = 'excel-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-					"<input class = 'load-xml' name = 'load-img' type='file' accept='text/html'>" +
-					"<div class = 'excel-container'></div>" +
-					"</div>" +
-					"<div class = 'delete-button-container'>" +
-					"<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
-					"</div>" +
-					"</div>");
+		$("#last").removeAttr("id")
+			.after("<div class = 'main-container' id = 'last'>" +
+				   "<div class = 'excel-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+				   "<input class = 'load-xml' name = 'load-img' type='file' accept='text/html'>" +
+				   "<div class = 'excel-container'></div>" +
+				   "</div>" +
+				   "<div class = 'delete-button-container'>" +
+				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "</div>" +
+				   "</div>");
 		//Добавляем прослушивание событий
 		createExcelEventListener();
+		setContainer();
 		createDeleteButtonEventListener();
 	});
 	
