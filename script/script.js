@@ -1,7 +1,6 @@
-window.onload = function () 
-{
+$(window).on("load", function(){
 	/*Глобальные переменные*/
-	let $selectedTable, $selectedCell;
+	let $selectedTable, $selectedCell;                                         
 	let buffer;
 	
 	/*Процедура нажатия на кнопку "Удалить"
@@ -10,10 +9,12 @@ window.onload = function ()
 	function createDeleteButtonEventListener()
 	{
 		$(".delete-button").each(function(){
-			$(this).on("click", function(){
-				if(confirm("Вы точно хотите удалить этот элемент?"))
-					$(this).parent().parent().remove();
-			});
+			if(!checkEvent($(this), "click")){
+				$(this).on("click", function(){
+					if(confirm("Вы точно хотите удалить этот элемент?"))
+						$(this).parent().parent().remove();
+				});
+			}
 		});	
 	}
 	
@@ -70,18 +71,20 @@ window.onload = function ()
 	/*Процедура загрузки картинки на сайт*/
 	function createImgEventListener(){
 		$(".load-img").each(function(){
-			$(this).on("change", function(){
-				let $input = $(this);
-				let reader = new FileReader();
-				reader.onload = function(){
-					let $img = $input.parent().children("img")[0];
-					$img.src = reader.result;
-					if(!$input.parent().children("p").length)
-						$input.parent()
-							.append("<p class = 'image-description' contentEditable>*Введите комментарий*</p>");
-				}
-				reader.readAsDataURL(event.target.files[0]);
-			});
+			if(!checkEvent($(this), "change")){
+				$(this).on("change", function(){
+					let $input = $(this);
+					let reader = new FileReader();
+					reader.onload = function(){
+						let $img = $input.parent().children("img")[0];
+						$img.src = reader.result;
+						if(!$input.parent().children("p").length)
+							$input.parent()
+								.append("<p class = 'image-description' contentEditable>*Введите комментарий*</p>");
+					}
+					reader.readAsDataURL(event.target.files[0]);
+				});
+			}
 		});
 	}
 	
@@ -136,13 +139,15 @@ window.onload = function ()
 	{
 		//Отображаем меню при нажатии ПКМ по таблице
 		$("td, th").each(function(){
-			$(this).on("contextmenu", function(ev){
-				$selectedTable = $(this).parent().parent().parent();
-				$selectedCell = $(this);
+			if(!checkEvent($(this), "contextmenu")){
+				$(this).on("contextmenu", function(ev){
+					$selectedTable = $(this).parent().parent().parent();
+					$selectedCell = $(this);
 				
-				ev.preventDefault();
-				$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
-			});
+					ev.preventDefault();
+					$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
+				});
+			}
 		});
 	}
 	
@@ -214,24 +219,63 @@ window.onload = function ()
 	/*Процедура загрузки таблицы Excel на сайт*/
 	function createExcelEventListener(){
 		$(".load-xml").each(function(){
-			$(this).on("change", function(){
-				let $input = $(this);
-				let reader = new FileReader();
-				reader.onload = function(){
-					let $xml = $input.parent().children(".excel-container")[0];
-					$($xml)
-						.append(reader.result);
-				}
-				reader.readAsText(event.target.files[0]);
-			});
+			if(!checkEvent($(this), "change")){
+				$(this).on("change", function(){
+					let $input = $(this);
+					let reader = new FileReader();
+					reader.onload = function(){
+						let $xml = $input.parent().children(".excel-container")[0];
+						$($xml)
+							.append(reader.result);
+					}
+					reader.readAsText(event.target.files[0]);
+				});
+			}
 		});
 	}
-}
+});
 
 /*Процедура, проверяющая, является ли переменная num числовой*/
-function isInteger(num) 
-{
+function isInteger(num){
 	return (num ^ 0) == num;
+}
+
+/*Функция, принимающая на вход элемент и определяющая
+список всех привязанных к нему событий*/
+function eventsList(element){
+	let events = element.data('events');
+	if (events !== undefined) 
+		return events;
+
+	events = $.data(element, 'events');
+	if (events !== undefined) 
+		return events;
+
+	events = $._data(element, 'events');
+	if (events !== undefined) 
+		return events;
+
+	events = $._data(element[0], 'events');
+	if (events !== undefined) 
+		return events;
+
+	return false;
+}
+
+/*Функция, принимающая на вход элемент и событие
+Провреяет, првязано ли к этому элементу данное событие*/		
+function checkEvent(element, eventname){
+	let events,
+	ret = false;
+
+	events = eventsList(element);
+	if (events){
+		$.each(events, function(evName, e){
+			if (evName == eventname)
+				ret = true;
+		});
+	}
+	return ret;
 }
 
 
