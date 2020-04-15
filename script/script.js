@@ -49,6 +49,41 @@ $(window).on("load", function(){
 		});
 	}
 	
+	/*Процедура, поднимающая выбранный контейнер на одну позицию вверх*/
+	function upContainer(){
+		$(".up-button").each(function(){
+			if(!checkEvent($(this), "click")){
+				$(this).on("click", function(){
+					let $container = $(this).parent().parent()
+					if($container.index() != 1){
+						$(".main-container").eq($container.index() - 1).before($container);
+					}
+				});
+			}
+		});
+	}
+	
+	/*Процедура, опускающая выбранный контейнер на одну позицию вниз*/
+	function downContainer(){
+		$(".down-button").each(function(){
+			if(!checkEvent($(this), "click")){
+				$(this).on("click", function(){
+					let $container = $(this).parent().parent();
+					if($container.index() != $(".main-container").length - 1){
+						$(".main-container").eq($container.index() + 1).after($container);
+					}
+				});
+			}
+		});
+	}
+	
+	/*Процедура, привязывающая к контейнеру общие сигналы*/
+	function containerEvents(){
+		setContainer();
+		upContainer();
+		downContainer();
+	}
+	
 	/*Процедура нажатия на кнопку "Добавить текст"
 	Добавляет в конце документа текстовое поле с заголовком*/
 	$("#create-text").on("click", function(){
@@ -59,11 +94,13 @@ $(window).on("load", function(){
 				   "<p>*Введите текст*</p>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
+				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
+				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
-		setContainer();
+		containerEvents();
 		createDeleteButtonEventListener();
 	});
 	
@@ -77,12 +114,14 @@ $(window).on("load", function(){
 				   "<img>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
+				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
+				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
 		createImgEventListener();
-		setContainer();
+		containerEvents();
 		createDeleteButtonEventListener();
 	});
 	
@@ -140,7 +179,9 @@ $(window).on("load", function(){
 				 "</table>" +
 				 "</div>" +
 				 "<div class = 'delete-button-container'>" + 
-				 "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				 "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
+				 "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
+				 "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
 				 "</div>" +
 				 "</div>";
 		//Добавляем таблицу на страничку
@@ -148,7 +189,7 @@ $(window).on("load", function(){
 			.after(table);			
 		//Добавляем прослушивание событий
 		createTableEventListener();
-		setContainer();
+		containerEvents();
 		createDeleteButtonEventListener();
 	});
 	
@@ -227,12 +268,14 @@ $(window).on("load", function(){
 				   "<div class = 'excel-container'></div>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button name = 'delete-button' type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
+				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
+				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
 		createExcelEventListener();
-		setContainer();
+		containerEvents();
 		createDeleteButtonEventListener();
 	});
 	
