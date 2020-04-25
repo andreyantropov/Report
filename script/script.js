@@ -288,7 +288,10 @@ $(window).on("load", function(){
 
 	/*Процедура объединения ячеек*/
 	$("#merge").on("click", function(){
-		alert($selectedTable.cellSelection("getArray").length);
+		let rowspan = $(".jq-cell-selected").parent().length;
+		let colspan = $(".jq-cell-selected").length / rowspan;
+		$(".jq-cell-selected:not(:first)").remove();
+		$(".jq-cell-selected").replaceWith("<td rowspan = " + rowspan + " colspan = " + colspan + "></td>");
 	});
 
 	/*Процедура добавления строки в таблицу*/
