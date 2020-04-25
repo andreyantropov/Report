@@ -55,19 +55,20 @@ table{
     left: -200%;
 }
 
-.menu-item{
-    height: 1.5rem;
-    line-height: 1.5rem;
-    font-size: 1rem;
-    font-weight: 100;
-    padding: 0 1rem;
-    cursor: pointer;
+.menu-button{
+	border: none;
+	text-align: left;
+	width: 100%;
 }
 
-.menu-item:hover,
-.menu-item:active{
-    color: #000;
-    font-weight: 500;
+.menu-button:hover{
+	background-color: #343a40;
+	color: white;
+}
+
+.jq-cell-selected{
+	background-color: #007bff;
+	color: white;
 }
 
 #on-top{
@@ -81,7 +82,7 @@ table{
 }
 
 @media(min-width: 1200px){
-	
+
 }
 
 @media(min-width: 992px and max-width: 1199px){

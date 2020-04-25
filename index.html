@@ -10,7 +10,8 @@
 		<script src = "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin = "anonymous"></script>
 		<script src = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin = "anonymous"></script>
 		<script src = "https://code.jquery.com/jquery-3.4.1.js"></script>
-		<script src = "script/script.js"></script>	
+		<script src="script/cellSelection.min.js"></script>
+		<script src = "script/script.js"></script>
 	</head>
 	<body>
 		<header>
@@ -29,6 +30,9 @@
 							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Текст</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<a class="dropdown-item" id = "create-text" href="#">Текст</a>
+								<a class="dropdown-item" id = "create-header" href="#">Заголовок</a>
+								<a class="dropdown-item" id = "create-subheader" href="#">Подзаголовок</a>
+								<a class="dropdown-item" id = "create-list" href="#">Список</a>
 							</div>
 						</li>
 						<!-- Кнопка "Картинки" -->
@@ -43,7 +47,7 @@
 							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Таблица</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<a class = "dropdown-item" id = "create-table" href = "#">Обычная</a>
-								<a class = "dropdown-item" id = "create-excel-table" href = "#">Excel</a>
+								<a class = "dropdown-item" id = "create-excel-table" href = "#">HTML</a>
 							</div>
 						</li>
 					</ul>
@@ -55,12 +59,14 @@
 			<div class = "clr" id = "clr"></div>
 			<!-- Контекстное меню -->
 			<ul class = "menu off" id = "menu">
-				<li class = "menu-item" id = "copy">Копировать</li>
-				<li class = "menu-item" id = "paste">Вставить</li>
-				<li class = "menu-item" id = "add-row">Добавить строку</li>
-				<li class = "menu-item" id = "add-col">Добавить столбец</li>
-				<li class = "menu-item" id = "remove-row">Удалить строку</li>
-				<li class = "menu-item" id = "remove-col">Удалить столбец</li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "copy">Копировать</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "cut">Вырезать</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "paste">Вставить</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "merge">Объединить ячейки</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "add-row">Добавить строку</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "add-col">Добавить столбец</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "remove-row">Удалить строку</button></li>
+				<li class = "menu-item"><button type = "button" class = "menu-button" id = "remove-col">Удалить столбец</button></li>
 			</ul>
 		</main>
 		<footer>
