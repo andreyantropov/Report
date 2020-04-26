@@ -3,6 +3,15 @@ $(window).on("load", function(){
 	let $selectedTable, $selectedCell;
 	let buffer;
 
+	/*Процедура перехода к якорю*/
+	$(function(){
+    $('a[href^="#"]').on("click", function(){
+       var target = $(this).attr('href');
+       $('html, body').animate({scrollTop: $(target).offset().top}, 1000);
+       return false;
+    });
+ });
+
 	/*Процедура нажатия на кнопку "Удалить"
 	Выводит окно подтверждения операции. Если пользователь
 	подтверждает удаление, то удаляет родительский элемент*/
@@ -33,7 +42,7 @@ $(window).on("load", function(){
 	/*Процедура пролистывания страницы вверх при нажатии
 	на кнопку "Вверх"*/
 	$("#on-top").on("click", function(){
-		$("html, body").animate({scrollTop: 0}, 500);
+		$("html, body").animate({scrollTop: 0}, 1000);
 	});
 
 	/*Процедура, устанавливающая на выбранном элементе флаг last
@@ -75,6 +84,26 @@ $(window).on("load", function(){
 				});
 			}
 		});
+	}
+
+	/*Процедура, отслеживающая сигнал смены пользователем текста*/
+	$(document).on("mouseup", function() {
+  	styleString();
+	});
+
+	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
+	function styleString() {
+  	if (window.getSelection() == "") {
+    	return false;
+  	}
+  	let range = window.getSelection().getRangeAt(0);
+  	let selectionContents = range.extractContents();
+  	let span = document.createElement("span");
+  	span.appendChild(selectionContents);
+  	/*span.setAttribute("class", "selected");
+  	span.style.backgroundColor = "yellow";
+  	span.style.color = "green";*/
+  	range.insertNode(span);
 	}
 
 	/*Процедура, привязывающая к контейнеру общие сигналы*/
@@ -168,8 +197,9 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'img-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<input class = 'load-img' name = 'load-img' type='file' accept='image/*'>" +
-				   "<img>" +
+					 "<img>" +
+					 "<label for='exampleFormControlFile1'>Выберите изображение</label>" +
+				   "<input class = 'form-control-file load-img' name = 'load-img' type='file' accept='image/*'>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
@@ -196,6 +226,7 @@ $(window).on("load", function(){
 						if(!$input.parent().children("p").length)
 							$input.parent()
 								.append("<p class = 'image-description' contentEditable>*Введите комментарий*</p>");
+							$input.parent().children("label")[0].remove();
 					}
 					reader.readAsDataURL(event.target.files[0]);
 				});
@@ -331,8 +362,9 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'excel-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<input class = 'load-xml' name = 'load-img' type='file' accept='text/html'>" +
-				   "<div class = 'excel-container'></div>" +
+					 "<div class = 'excel-container'></div>" +
+					 "<label for='exampleFormControlFile1'>Выберите файл</label>" +
+				   "<input class = 'form-control-file load-xml' name = 'load-img' type='file' accept='text/html'>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
@@ -357,6 +389,7 @@ $(window).on("load", function(){
 						let $xml = $input.parent().children(".excel-container")[0];
 						$($xml)
 							.append(reader.result);
+						$input.parent().children("label")[0].remove();
 					}
 					reader.readAsText(event.target.files[0]);
 				});
