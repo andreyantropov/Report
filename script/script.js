@@ -3,6 +3,26 @@ $(window).on("load", function(){
 	let $selectedTable, $selectedCell;
 	let buffer;
 
+	/*Заполняем выпадающие меню*/
+	/*Заполняем выпадающее меню размера шрифта*/
+	for(let size = 1; size < 100; size++){
+		$("#font-size-select")
+			.append("<option val = " + size +">" + size + "</option>");
+	}
+	$("#font-size-select").val(16);
+
+	/*Цвет текста*/
+	$("#text-color-select option").each(function(){
+		$(this).css("background-color", $(this).val());
+	});
+	$("#text-color-select").css("background-color", $('#text-color-select option:selected').val());
+
+	/*Цвет заднего фона*/
+	$("#background-color-select option").each(function(){
+		$(this).css("background-color", $(this).val());
+	});
+	$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
+
 	/*Процедура перехода к якорю*/
 	$(function(){
     $('a[href^="#"]').on("click", function(){
@@ -86,9 +106,26 @@ $(window).on("load", function(){
 		});
 	}
 
-	/*Процедура, отслеживающая сигнал смены пользователем текста*/
-	$(document).on("mouseup", function() {
-  	styleString();
+	/*Прцедура, отслеживающая смену шрифта*/
+	$("#font-family-select").on("change", function(){
+		styleString();
+	});
+
+	/*Прцедура, отслеживающая смену шрифта*/
+	$("#font-size-select").on("change", function(){
+		styleString();
+	});
+
+	/*Прцедура, отслеживающая смену цвета шрифта*/
+	$("#text-color-select").on("change", function(){
+		$("#text-color-select").css("background-color", $('#text-color-select option:selected').val());
+		styleString();
+	});
+
+	/*Прцедура, отслеживающая смену заднего фона текста*/
+	$("#background-color-select").on("change", function(){
+		$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
+		styleString();
 	});
 
 	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
@@ -100,9 +137,10 @@ $(window).on("load", function(){
   	let selectionContents = range.extractContents();
   	let span = document.createElement("span");
   	span.appendChild(selectionContents);
-  	/*span.setAttribute("class", "selected");
-  	span.style.backgroundColor = "yellow";
-  	span.style.color = "green";*/
+		span.style.fontFamily = $('#font-family-select option:selected').html();
+		span.style.fontSize = $('#font-size-select option:selected').html() + "px";
+		span.style.color = $('#text-color-select option:selected').val();
+		span.style.backgroundColor = $('#background-color-select option:selected').val();
   	range.insertNode(span);
 	}
 
