@@ -128,19 +128,31 @@ $(window).on("load", function(){
 		styleString();
 	});
 
+	/*Процедура, отслеживающая смену чекбокса "Жирный"*/
+	$("#bold").on("change", function(){
+		styleString();
+	});
+
+	/*Процедура, отслеживающая смену чекбокса "Курсив"*/
+	$("#cursive").on("change", function(){
+		styleString();
+	});
+
 	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
 	function styleString() {
   	if (window.getSelection() == "") {
     	return false;
   	}
   	let range = window.getSelection().getRangeAt(0);
-  	let selectionContents = range.extractContents();
+  	let selectionContents = range.extractContents().textContent;
   	let span = document.createElement("span");
-  	span.appendChild(selectionContents);
+		span.innerHTML = selectionContents;
 		span.style.fontFamily = $('#font-family-select option:selected').html();
 		span.style.fontSize = $('#font-size-select option:selected').html() + "px";
 		span.style.color = $('#text-color-select option:selected').val();
 		span.style.backgroundColor = $('#background-color-select option:selected').val();
+		$("#bold").is(':checked') ? span.style.fontWeight = "bold" : span.style.fontWeight = "normal";
+		$("#cursive").is(':checked') ? span.style.fontStyle = "italic" : span.style.fontStyle = "normal";
   	range.insertNode(span);
 	}
 
@@ -170,13 +182,24 @@ $(window).on("load", function(){
 		createDeleteButtonEventListener();
 	});
 
+	/*Процедура изменения ссылки (якоря) при переименовании заголовка*/
+	function hrefChange(){
+		$("h2, h3").each(function(){
+			if(!checkEvent($(this), "keyup")){
+				$(this).on("keyup", function(){
+					$(this).find(".anchor").attr("href", "#" + $(this).text());
+				});
+			}
+		});
+	}
+
 	/*Процедура нажатия на кнопку "Заголовок"
 	Добавляет в конце документа заголовок*/
 	$("#create-header").on("click", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h2 contenteditable>*Введите заголовок*</h2>" +
+				   "<h2 contenteditable><a class = 'anchor' href = '#Введите заголовок'>*Введите заголовок*</a></h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
@@ -186,6 +209,7 @@ $(window).on("load", function(){
 				   "</div>");
 		//Добавляем прослушивание событий
 		containerEvents();
+		hrefChange();
 		createDeleteButtonEventListener();
 	});
 
@@ -195,7 +219,7 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h3 contenteditable>*Введите подзаголовок*</h2>" +
+				   "<h3 contenteditable><a class = 'anchor' href = '#Введите подзаголовок'>*Введите подзаголовок*</a></h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
@@ -205,6 +229,7 @@ $(window).on("load", function(){
 				   "</div>");
 		//Добавляем прослушивание событий
 		containerEvents();
+		hrefChange();
 		createDeleteButtonEventListener();
 	});
 
@@ -361,6 +386,19 @@ $(window).on("load", function(){
 		let colspan = $(".jq-cell-selected").length / rowspan;
 		$(".jq-cell-selected:not(:first)").remove();
 		$(".jq-cell-selected").replaceWith("<td rowspan = " + rowspan + " colspan = " + colspan + "></td>");
+		createTableEventListener();
+	});
+
+	/*Процедура разбиения ячеек*/
+	$("#break").on("click", function(){
+		let rowspan = $(".jq-cell-selected").attr("rowspan");
+		let colspan = $(".jq-cell-selected").attr("colspan");
+		let rowIndex = $(".jq-cell-selected").parent().index();
+		for(let i = 0; i < rowspan; i++)
+			for(let j = 0; j < colspan; j++)
+				$selectedTable.find("tr:eq(" + (rowIndex + i) + ")").append("<td></td>");
+		$(".jq-cell-selected").remove();
+		createTableEventListener();
 	});
 
 	/*Процедура добавления строки в таблицу*/
@@ -370,15 +408,17 @@ $(window).on("load", function(){
 			newRow += "<td></td>";
 		$selectedCell.parent()
 			.after("<tr>" + newRow + "</tr>");
+			createTableEventListener();
 	});
 
 	/*Процедура добавления столбца в таблицу*/
 	$("#add-col").on("click", function(){
 		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
 		$selectedTable.find("tr").each(function(){
-			let $newCell = $(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").clone().empty();
-			$(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").after($newCell);
+			let $newCell = $(this).find("td:eq(" + selectedCol + ")").clone().empty();
+			$(this).find("td:eq(" + selectedCol + ")").after($newCell);
 		});
+		createTableEventListener();
 	});
 
 	/*Процедура удаления строки из таблицы*/
@@ -390,7 +430,7 @@ $(window).on("load", function(){
 	$("#remove-col").on("click", function(){
 		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
 		$selectedTable.find("tr").each(function(){
-			$(this).find("td:eq(" + selectedCol + "), th:eq(" + selectedCol + ")").remove();
+			$(this).find("td:eq(" + selectedCol + ")").remove();
 		});
 	});
 
