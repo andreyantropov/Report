@@ -187,9 +187,19 @@ $(window).on("load", function(){
 		$("h2, h3").each(function(){
 			if(!checkEvent($(this), "keyup")){
 				$(this).on("keyup", function(){
-					$(this).find(".anchor").attr("href", "#" + $(this).text());
+					$(this).attr("id", $(this).text());
+					createContentContainer();
 				});
 			}
+		});
+		createContentContainer();
+	}
+
+	/*Процедура, заполняющее поле "Содержание"*/
+	function createContentContainer(){
+		$(".anchor").remove();
+		$("h2, h3").each(function(){
+			$("#content-container").append("<a class = 'anchor' href = '" + ("#" + $(this).text()) + "'>" + $(this).text() + "</a>");
 		});
 	}
 
@@ -199,7 +209,7 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h2 contenteditable><a class = 'anchor' href = '#Введите заголовок'>*Введите заголовок*</a></h2>" +
+				   "<h2 id = '*Введите заголовок*' contenteditable>*Введите заголовок*</h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
@@ -219,7 +229,7 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h3 contenteditable><a class = 'anchor' href = '#Введите подзаголовок'>*Введите подзаголовок*</a></h2>" +
+				   "<h3 id = '*Введите подзаголовок*' contenteditable>*Введите подзаголовок*</h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
 				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +

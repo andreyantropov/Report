@@ -1,5 +1,5 @@
 header{
-	height: 100px;
+ 	height: 100px;
 }
 
 img{
@@ -10,16 +10,25 @@ table{
 	table-layout: fixed;
 }
 
-.report-container{
-	margin-top: 100px;
-}
-
 .clr{
 	clear: both;
 }
 
-.left-float{
-	float: left;
+.sider {
+  height: 100%;
+  width: 20%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #343a40;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.report-container{
+	float: right;
+	width: 80%;
 }
 
 .main-container{
@@ -40,11 +49,11 @@ table{
 }
 
 .anchor{
-	color: black;
+	color: white;
 }
 
 .anchor:hover{
-	color: black;
+	color: white;
 	text-decoration: none;
 }
 
