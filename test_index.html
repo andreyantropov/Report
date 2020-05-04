@@ -5,8 +5,8 @@
 		<meta charset = "UTF-8">
 		<meta name = "viewport" content = "width = device-width, initial-scale = 1">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 		<link rel = "stylesheet" href = "css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 		<script src = "https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin = "anonymous"></script>
 		<script src = "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin = "anonymous"></script>
 		<script src = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin = "anonymous"></script>
@@ -67,9 +67,6 @@
           <li class = "nav-item">
             <a class="nav-link" id="cursive" href="#"><i class="fas fa-italic"></i></a>
           </li>
-					<li class = "nav-item">
-            <a class="nav-link" id="underline" href="#"><i class="fas fa-underline"></i></a>
-          </li>
           <li class="nav-item separator"></li>
           <!-- Выбор цвета шрифта -->
           <li class = "nav-item">
@@ -112,45 +109,13 @@
   					</select>
           </li>
         </ul>
-				<!-- Содержание -->
-				<a href="#contentModal" class="nav-link" id = "showContent" data-toggle="modal"><i class="fas fa-book-reader"></i></a>
       </nav>
 		</header>
-		<!-- Основная форма -->
 		<main class = "report-container" id = "report-container">
-			<div class = "main-container" id = "last"></div>
-			<div class = "clr" id = "clr"></div>
-			<!-- Контекстное меню -->
-			<ul class = "menu off" id = "menu">
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "copy">Копировать</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "cut">Вырезать</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "paste">Вставить</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "merge">Объединить ячейки</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "break">Разбить ячейки</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "add-row">Добавить строку</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "add-col">Добавить столбец</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "remove-row">Удалить строку</button></li>
-				<li class = "menu-item"><button type = "button" class = "menu-button" id = "remove-col">Удалить столбец</button></li>
-			</ul>
+      <div class = "main-container" id = "last"></div>
+      <div class = "clr" id = "clr"></div>
 		</main>
 		<footer>
-			<!-- Кнопка "Вверх" -->
-			<div id = "on-top">Вверх</div>
 		</footer>
-		<div id="contentModal" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Содержание</h4>
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					</div>
-					<div class="modal-body" id = "content-modal-body"></div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-						<button type="button" class="btn btn-primary">Сохранить изменения</button>
-					</div>
-				</div>
-			</div>
-		</div>
 	</body>
 </html>

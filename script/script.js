@@ -23,15 +23,6 @@ $(window).on("load", function(){
 	});
 	$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
 
-	/*Процедура перехода к якорю*/
-	$(function(){
-    $('a[href^="#"]').on("click", function(){
-       var target = $(this).attr('href');
-       $('html, body').animate({scrollTop: $(target).offset().top}, 1000);
-       return false;
-    });
- });
-
 	/*Процедура нажатия на кнопку "Удалить"
 	Выводит окно подтверждения операции. Если пользователь
 	подтверждает удаление, то удаляет родительский элемент*/
@@ -129,12 +120,20 @@ $(window).on("load", function(){
 	});
 
 	/*Процедура, отслеживающая смену чекбокса "Жирный"*/
-	$("#bold").on("change", function(){
+	$("#bold").on("click", function(){
+		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
 		styleString();
 	});
 
 	/*Процедура, отслеживающая смену чекбокса "Курсив"*/
-	$("#cursive").on("change", function(){
+	$("#cursive").on("click", function(){
+		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
+		styleString();
+	});
+
+	/*Процедура, отслеживающая смену чекбокса "Курсив"*/
+	$("#underline").on("click", function(){
+		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
 		styleString();
 	});
 
@@ -151,8 +150,9 @@ $(window).on("load", function(){
 		span.style.fontSize = $('#font-size-select option:selected').html() + "px";
 		span.style.color = $('#text-color-select option:selected').val();
 		span.style.backgroundColor = $('#background-color-select option:selected').val();
-		$("#bold").is(':checked') ? span.style.fontWeight = "bold" : span.style.fontWeight = "normal";
-		$("#cursive").is(':checked') ? span.style.fontStyle = "italic" : span.style.fontStyle = "normal";
+		$("#bold").hasClass("active") ? span.style.fontWeight = "bold" : span.style.fontWeight = "normal";
+		$("#cursive").hasClass("active") ? span.style.fontStyle = "italic" : span.style.fontStyle = "normal";
+		$("#underline").hasClass("active") ? span.style.textDecoration = "underline" : span.style.fontStyle = "none";
   	range.insertNode(span);
 	}
 
@@ -169,12 +169,12 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<p contenteditable>*Введите текст*</p>" +
+				   "<p style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' contenteditable>*Введите текст*</p>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
@@ -188,20 +188,18 @@ $(window).on("load", function(){
 			if(!checkEvent($(this), "keyup")){
 				$(this).on("keyup", function(){
 					$(this).attr("id", $(this).text());
-					createContentContainer();
 				});
 			}
 		});
-		createContentContainer();
 	}
 
 	/*Процедура, заполняющее поле "Содержание"*/
-	function createContentContainer(){
+	$("#showContent").on("click", function(){
 		$(".anchor").remove();
 		$("h2, h3").each(function(){
-			$("#content-container").append("<a class = 'anchor' href = '" + ("#" + $(this).text()) + "'>" + $(this).text() + "</a>");
+			$("#content-modal-body").append("<div><a class = 'anchor' href = '" + ("#" + $(this).text()) + "'>" + $(this).text() + "</a></div>");
 		});
-	}
+	});
 
 	/*Процедура нажатия на кнопку "Заголовок"
 	Добавляет в конце документа заголовок*/
@@ -209,12 +207,12 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h2 id = '*Введите заголовок*' contenteditable>*Введите заголовок*</h2>" +
+				   "<h2 style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' id = '*Введите заголовок*' contenteditable>*Введите заголовок*</h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
@@ -229,12 +227,12 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<h3 id = '*Введите подзаголовок*' contenteditable>*Введите подзаголовок*</h2>" +
+				   "<h3 style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' id = '*Введите подзаголовок*' contenteditable>*Введите подзаголовок*</h2>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
@@ -249,14 +247,14 @@ $(window).on("load", function(){
 		$("#last").removeAttr("id")
 			.after("<div class = 'main-container' id = 'last'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
-				   "<ul contentEditable>" +
+				   "<ul style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' contentEditable>" +
 					 "<li>*Элемент списка*</li>" +
 					 "</ul>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
@@ -275,9 +273,9 @@ $(window).on("load", function(){
 				   "<input class = 'form-control-file load-img' name = 'load-img' type='file' accept='image/*'>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
@@ -333,9 +331,9 @@ $(window).on("load", function(){
 		table += "</table>" +
 				 "</div>" +
 				 "<div class = 'delete-button-container'>" +
-				 "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				 "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				 "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				 "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				 "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				 "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				 "</div>" +
 				 "</div>";
 		//Добавляем таблицу на страничку
@@ -455,9 +453,9 @@ $(window).on("load", function(){
 				   "<input class = 'form-control-file load-xml' name = 'load-img' type='file' accept='text/html'>" +
 				   "</div>" +
 				   "<div class = 'delete-button-container'>" +
-				   "<button type='button' class='btn btn-link up-button'>Вверх</button>" +
-				   "<button type='button' class='btn btn-link down-button'>Вниз</button>" +
-				   "<button type='button' class='btn btn-link delete-button'>Удалить</button>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
 		//Добавляем прослушивание событий
