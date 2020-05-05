@@ -23,6 +23,12 @@ $(window).on("load", function(){
 	});
 	$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
 
+	/*Цвет ячейки фона*/
+	$("#cell-background-color-select option").each(function(){
+		$(this).css("background-color", $(this).val());
+	});
+	$("#cell-background-color-select").css("background-color", $('#cell-background-color-select option:selected').val());
+
 	/*Процедура нажатия на кнопку "Удалить"
 	Выводит окно подтверждения операции. Если пользователь
 	подтверждает удаление, то удаляет родительский элемент*/
@@ -132,13 +138,22 @@ $(window).on("load", function(){
 		styleString();
 	});
 
+	/*Процедура изменения ширины ячеек таблицы*/
+	$("#cellWidth").on("change", function(){
+		$selectedCell.width($(this).val() + "px");
+	});
+
+	/*Процедура изменения цвета выбранных ячеек*/
+	$("#cell-background-color-select").on("change", function(){
+		$(".jq-cell-selected").css("background-color", $('#cell-background-color-select option:selected').val());
+	});
+
 	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
 	function styleString() {
-  	if (window.getSelection() == "") {
-    	return false;
-  	}
   	let range = window.getSelection().getRangeAt(0);
   	let selectionContents = range.extractContents().textContent;
+		if(selectionContents == "")
+			selectionContents = " ";
   	let span = document.createElement("span");
 		span.innerHTML = selectionContents;
 		span.style.fontFamily = $('#font-family-select option:selected').html();
@@ -354,11 +369,20 @@ $(window).on("load", function(){
 				$(this).on("contextmenu", function(ev){
 					$selectedTable = $(this).parent().parent();
 					$selectedCell = $(this);
+					$("#cellWidth").val($selectedCell.width());
 
 					ev.preventDefault();
 					$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
 				});
 			}
+			/*if(!checkEvent($(this), "click")){
+				//Отображаем меню при нажатии ПКМ по таблице
+				$(this).on("click", function(ev){
+					$selectedTable = $(this).parent().parent();
+					$selectedCell = $(this);
+
+				});
+			}*/
 		});
 	}
 

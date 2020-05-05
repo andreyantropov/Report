@@ -105,8 +105,7 @@ table{
 }
 
 .jq-cell-selected{
-	background-color: #007bff;
-	color: white;
+  border: 5px solid #007bff !important;
 }
 
 #showContent{

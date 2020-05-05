@@ -129,6 +129,31 @@
   						<option value = "purple"></option>
   					</select>
           </li>
+					<li class="nav-item separator"></li>
+					<!-- Ширина ячейки -->
+					<li class = "nav-item">
+						<input type="text" class="form-control" id="cellWidth" placeholder = "Ширина ячейки">
+					</li>
+					<!-- Цвет ячейки -->
+					<li class = "nav-item">
+						<select class="custom-select" id = "cell-background-color-select">
+    					<option value = "black"></option>
+    					<option value = "gray"></option>
+    					<option value = "silver"></option>
+  						<option value = "white" selected></option>
+  						<option value = "red"></option>
+  						<option value = "maroon"></option>
+  						<option value = "yellow"></option>
+  						<option value = "olive"></option>
+  						<option value = "lime"></option>
+  						<option value = "green"></option>
+  						<option value = "aqua"></option>
+  						<option value = "teal"></option>
+  						<option value = "blue"></option>
+  						<option value = "navy"></option>
+  						<option value = "purple"></option>
+  					</select>
+					</li>
         </ul>
 				<!-- Содержание -->
 				<a href="#contentModal" class="nav-link" id = "showContent" data-toggle="modal"><i class="fas fa-book-reader"></i></a>
@@ -165,7 +190,6 @@
 					<div class="modal-body" id = "content-modal-body"></div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-						<button type="button" class="btn btn-primary">Сохранить изменения</button>
 					</div>
 				</div>
 			</div>
