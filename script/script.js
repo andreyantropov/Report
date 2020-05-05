@@ -119,20 +119,15 @@ $(window).on("load", function(){
 		styleString();
 	});
 
-	/*Процедура, отслеживающая смену чекбокса "Жирный"*/
-	$("#bold").on("click", function(){
-		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
-		styleString();
+	/*Процедура, отслеживающая смену выравнивания текста*/
+	$("#justify, #center, #left, #right").on("click", function(){
+		$(".align").removeClass("active");
+		$(this).addClass("active");
+		$("#last").css("text-align", $(this).attr("id"));
 	});
 
-	/*Процедура, отслеживающая смену чекбокса "Курсив"*/
-	$("#cursive").on("click", function(){
-		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
-		styleString();
-	});
-
-	/*Процедура, отслеживающая смену чекбокса "Курсив"*/
-	$("#underline").on("click", function(){
+	/*Процедура, отслеживающая смену параметров "Жирный", "Курсив", "Подчеркнутый"*/
+	$("#bold, #cursive, #underline").on("click", function(){
 		$(this).hasClass("active") ? $(this).removeClass("active") : $(this).addClass("active");
 		styleString();
 	});
@@ -167,7 +162,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа текстовое поле*/
 	$("#create-text").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 				   "<p style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' contenteditable>*Введите текст*</p>" +
 				   "</div>" +
@@ -205,7 +200,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа заголовок*/
 	$("#create-header").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 				   "<h2 style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' id = '*Введите заголовок*' contenteditable>*Введите заголовок*</h2>" +
 				   "</div>" +
@@ -225,7 +220,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа подзаголовок*/
 	$("#create-subheader").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 				   "<h3 style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' id = '*Введите подзаголовок*' contenteditable>*Введите подзаголовок*</h2>" +
 				   "</div>" +
@@ -245,7 +240,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа список*/
 	$("#create-list").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 				   "<ul style = 'font-family: " + $('#font-family-select option:selected').html() + "; font-size: " + $('#font-size-select option:selected').html() + "px" + "' contentEditable>" +
 					 "<li>*Элемент списка*</li>" +
@@ -266,7 +261,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа текстовое поле с заголовком*/
 	$("#create-image").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'img-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 					 "<img>" +
 					 "<label for='exampleFormControlFile1'>Выберите изображение</label>" +
@@ -319,7 +314,7 @@ $(window).on("load", function(){
 			return;
 		}
 		//Создаем таблицу
-		let table = "<div class = 'main-container' id = 'last'>" +
+		let table = "<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 					"<div class = 'table-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 					"<table class = 'table table-bordered' contenteditable>";
 		for(i = 0; i < rows; i++){
@@ -446,7 +441,7 @@ $(window).on("load", function(){
 	Добавляет в конце документа выбранный фрагмент html (для добавления word/excel)*/
 	$("#create-excel-table").on("click", function(){
 		$("#last").removeAttr("id")
-			.after("<div class = 'main-container' id = 'last'>" +
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
 				   "<div class = 'excel-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
 					 "<div class = 'excel-container'></div>" +
 					 "<label for='exampleFormControlFile1'>Выберите файл</label>" +
