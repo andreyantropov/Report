@@ -1,8 +1,4 @@
 $(window).on("load", function(){
-	/*Глобальные переменные*/
-	let $selectedTable, $selectedCell;
-	let buffer;
-
 	/*Заполняем выпадающие меню*/
 	/*Заполняем выпадающее меню размера шрифта*/
 	for(let size = 1; size < 100; size++){
@@ -23,7 +19,7 @@ $(window).on("load", function(){
 	});
 	$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
 
-	/*Цвет ячейки фона*/
+	/*Цвет фона ячейки*/
 	$("#cell-background-color-select option").each(function(){
 		$(this).css("background-color", $(this).val());
 	});
@@ -140,7 +136,7 @@ $(window).on("load", function(){
 
 	/*Процедура изменения ширины ячеек таблицы*/
 	$("#cellWidth").on("change", function(){
-		$selectedCell.width($(this).val() + "px");
+		$("#selectedCell").width($(this).val() + "px");
 	});
 
 	/*Процедура изменения цвета выбранных ячеек*/
@@ -367,29 +363,65 @@ $(window).on("load", function(){
 			if(!checkEvent($(this), "contextmenu")){
 				//Отображаем меню при нажатии ПКМ по таблице
 				$(this).on("contextmenu", function(ev){
-					$selectedTable = $(this).parent().parent();
-					$selectedCell = $(this);
-					$("#cellWidth").val($selectedCell.width());
+					$("#selectedTable").removeAttr("id");
+					$("#selectedCell").removeAttr("id");
+					$(this).parent().parent().parent().attr("id", "selectedTable");
+					$(this).attr("id", "selectedCell");
+					$("*").not("#selectedTable td").removeClass("jq-cell-selected");
+					$("#cellWidth").val($("#selectedCell").width());
+					$("#cell-background-color-select").val($("#selectedCell").css("background-color"));
 
 					ev.preventDefault();
 					$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
 				});
 			}
-			/*if(!checkEvent($(this), "click")){
-				//Отображаем меню при нажатии ПКМ по таблице
-				$(this).on("click", function(ev){
-					$selectedTable = $(this).parent().parent();
-					$selectedCell = $(this);
-
+			if(!checkEvent($(this), "mouseup")){
+				$(this).on("mouseup", function(ev){
+					$("#selectedTable").removeAttr("id");
+					$("#selectedCell").removeAttr("id");
+					$(this).parent().parent().parent().attr("id", "selectedTable");
+					$(this).attr("id", "selectedCell");
+					$("*").not("#selectedTable td").removeClass("jq-cell-selected");
+					$("#cellWidth").val($("#selectedCell").width());
+					$("#cell-background-color-select").val($("selectedCell").css("background-color"));
 				});
-			}*/
+			}
 		});
 	}
 
 	/*Процедура, скрывающая выпадающее меню при нажатии ЛКМ*/
 	$(document).on("click", function(e){
 		$("#menu").offset({top: -1000, left: -1000});
-		//if (!$selectedTable.is(e.target)){}
+	});
+
+	/**/
+	$(document).on("contextmenu", function(e){
+		if($("#selectedTable").has(e.target).length === 0){
+			$("#selectedTable").removeAttr("id");
+			$("#selectedCell").removeAttr("id");
+			$("#cellWidth").val("");
+			$(".jq-cell-selected").removeClass();
+      $("#menu").offset({top: -1000, left: -1000});
+    }
+	});
+
+	/**/
+	$(document).on("mouseup", function(e){
+		if($("#selectedTable").has(e.target).length === 0 && $("#menu").has(e.target).length === 0
+	  && (".navber").has(e.target).length === 0){
+			$("#selectedTable").removeAttr("id");
+			$("#selectedCell").removeAttr("id");
+			$("#cellWidth").val("");
+			$(".jq-cell-selected").removeClass();
+      $("#menu").offset({top: -1000, left: -1000});
+    }
+	});
+
+	$(document).on("click", function(e){
+		let $container = $(".table");
+		if (container.has(e.target).length === 0){
+        $(".jq-cell-selected").removeClass();
+    }
 	});
 
 	/*Процедура копирования данных в буфер обмена*/
@@ -423,7 +455,7 @@ $(window).on("load", function(){
 		let rowIndex = $(".jq-cell-selected").parent().index();
 		for(let i = 0; i < rowspan; i++)
 			for(let j = 0; j < colspan; j++)
-				$selectedTable.find("tr:eq(" + (rowIndex + i) + ")").append("<td></td>");
+				$("#selectedTable").children().find("tr:eq(" + (rowIndex + i) + ")").append("<td></td>");
 		$(".jq-cell-selected").remove();
 		createTableEventListener();
 	});
@@ -431,17 +463,17 @@ $(window).on("load", function(){
 	/*Процедура добавления строки в таблицу*/
 	$("#add-row").on("click", function(){
 		let newRow;
-		for(let i = 0; i < $selectedCell.parent().children().length; i++)
+		for(let i = 0; i < $("#selectedCell").parent().children().length; i++)
 			newRow += "<td></td>";
-		$selectedCell.parent()
+		$("#selectedCell").parent()
 			.after("<tr>" + newRow + "</tr>");
 			createTableEventListener();
 	});
 
 	/*Процедура добавления столбца в таблицу*/
 	$("#add-col").on("click", function(){
-		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
-		$selectedTable.find("tr").each(function(){
+		let selectedCol = $("#selectedCell").parent().children().index($(this)) - 1;
+		$("#selectedTable").children().find("tr").each(function(){
 			let $newCell = $(this).find("td:eq(" + selectedCol + ")").clone().empty();
 			$(this).find("td:eq(" + selectedCol + ")").after($newCell);
 		});
@@ -450,13 +482,13 @@ $(window).on("load", function(){
 
 	/*Процедура удаления строки из таблицы*/
 	$("#remove-row").on("click", function(){
-		$selectedCell.parent().remove();
+		$("#selectedCell").parent().remove();
 	});
 
 	/*Процедура удаления столбца из таблицы*/
 	$("#remove-col").on("click", function(){
-		let selectedCol = $selectedCell.parent().children().index($(this)) - 1;
-		$selectedTable.find("tr").each(function(){
+		let selectedCol = $("#selectedCell").parent().children().index($(this)) - 1;
+		$("#selectedTable").children().find("tr").each(function(){
 			$(this).find("td:eq(" + selectedCol + ")").remove();
 		});
 	});
