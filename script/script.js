@@ -144,6 +144,18 @@ $(window).on("load", function(){
 		$(".jq-cell-selected").css("background-color", $('#cell-background-color-select option:selected').val());
 	});
 
+	/*Процедура, устанавливающая автоматическую ширину ячеек*/
+	$("#autoCellWidth").on("click", function(){
+		if($(this).hasClass("active")){
+			$(this).removeClass("active");
+			$("#selectedTable").css("table-layout", "fixed");
+		}
+		else{
+			$(this).addClass("active");
+			$("#selectedTable").css("table-layout", "auto");
+		}
+	});
+
 	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
 	function styleString() {
   	let range = window.getSelection().getRangeAt(0);
@@ -351,6 +363,18 @@ $(window).on("load", function(){
 		createDeleteButtonEventListener();
 	});
 
+	/*Процедура смены активной таблицы*/
+	function selectTable($elem){
+		$("#selectedTable").removeAttr("id");
+		$("#selectedCell").removeAttr("id");
+		$elem.parent().parent().parent().attr("id", "selectedTable");
+		$elem.attr("id", "selectedCell");
+		$("*").not("#selectedTable td").removeClass("jq-cell-selected");
+		($("#selectedTable").css("table-layout") != "fixed") ? $("#autoCellWidth").addClass("active") : $("#autoCellWidth").removeClass("active");
+		$("#cellWidth").val($("#selectedCell").width());
+		$("#cell-background-color-select").val($("#selectedCell").css("background-color"));
+	}
+
 	/*Процедура, добавляющая пользовательское выпадающее
 	меню в таблицы пользователя*/
 	function createTableEventListener()
@@ -361,29 +385,18 @@ $(window).on("load", function(){
 		});
 		$("td").each(function(){
 			if(!checkEvent($(this), "contextmenu")){
-				//Отображаем меню при нажатии ПКМ по таблице
+				//Определяем текущую таблицу активной
 				$(this).on("contextmenu", function(ev){
-					$("#selectedTable").removeAttr("id");
-					$("#selectedCell").removeAttr("id");
-					$(this).parent().parent().parent().attr("id", "selectedTable");
-					$(this).attr("id", "selectedCell");
-					$("*").not("#selectedTable td").removeClass("jq-cell-selected");
-					$("#cellWidth").val($("#selectedCell").width());
-					$("#cell-background-color-select").val($("#selectedCell").css("background-color"));
-
+					selectTable($(this));
+					//Отображаем меню при нажатии ПКМ по таблице
 					ev.preventDefault();
 					$("#menu").offset({top: ev.clientY + $(window).scrollTop(), left: ev.clientX});
 				});
 			}
 			if(!checkEvent($(this), "mouseup")){
 				$(this).on("mouseup", function(ev){
-					$("#selectedTable").removeAttr("id");
-					$("#selectedCell").removeAttr("id");
-					$(this).parent().parent().parent().attr("id", "selectedTable");
-					$(this).attr("id", "selectedCell");
-					$("*").not("#selectedTable td").removeClass("jq-cell-selected");
-					$("#cellWidth").val($("#selectedCell").width());
-					$("#cell-background-color-select").val($("selectedCell").css("background-color"));
+					//Определяем текущую таблицу активной
+					selectTable($(this));
 				});
 			}
 		});
@@ -394,7 +407,7 @@ $(window).on("load", function(){
 		$("#menu").offset({top: -1000, left: -1000});
 	});
 
-	/**/
+	/*Процедура, сбрасывающая выделенные ячейки таблицы при клике ПКМ вне ее*/
 	$(document).on("contextmenu", function(e){
 		if($("#selectedTable").has(e.target).length === 0){
 			$("#selectedTable").removeAttr("id");
@@ -405,7 +418,7 @@ $(window).on("load", function(){
     }
 	});
 
-	/**/
+	/*Процедура, сбрасывающая выделенные ячейки таблицы при клике ЛКМ вне ее/контекстного меню/панели инструментов*/
 	$(document).on("mouseup", function(e){
 		if($("#selectedTable").has(e.target).length === 0 && $("#menu").has(e.target).length === 0
 	  && (".navber").has(e.target).length === 0){
@@ -441,8 +454,24 @@ $(window).on("load", function(){
 
 	/*Процедура объединения ячеек*/
 	$("#merge").on("click", function(){
-		let rowspan = $(".jq-cell-selected").parent().length;
-		let colspan = $(".jq-cell-selected").length / rowspan;
+		//Общая площадь
+		let square = 0;
+		$(".jq-cell-selected").each(function(){
+			let col = $(this).attr("colspan");
+			let row = $(this).attr("rowspan");
+			if(!col)	col = 1;
+			if(!row)	row = 1;
+			square += (col*row);
+		});
+		//Столбцы
+		let colspan = 0;
+		let $row = $(".jq-cell-selected:first").parent().children(".jq-cell-selected");
+		$row.each(function(){
+			$(this).attr("colspan") ? colspan += $(this).attr("colspan") : colspan++;
+		});
+		//Строки
+		let rowspan = square / colspan;
+		//Объединяем ячейки
 		$(".jq-cell-selected:not(:first)").remove();
 		$(".jq-cell-selected").replaceWith("<td rowspan = " + rowspan + " colspan = " + colspan + "></td>");
 		createTableEventListener();
