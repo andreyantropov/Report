@@ -1,4 +1,7 @@
 $(window).on("load", function(){
+	/*Глобальные переменные*/
+	let linkRange, linkSelection;
+
 	/*Заполняем выпадающие меню*/
 	/*Заполняем выпадающее меню размера шрифта*/
 	for(let size = 1; size < 100; size++){
@@ -296,6 +299,41 @@ $(window).on("load", function(){
 		//Добавляем прослушивание событий
 		containerEvents();
 		createDeleteButtonEventListener();
+	});
+
+	/*Процедура, открывающая модальное окно для создания ссылки*/
+	$("#create-link").on("click", function(){
+		linkRange = window.getSelection().getRangeAt(0);
+		linkSelection = linkRange.extractContents().textContent;
+		$("#link-text").val(linkSelection);
+	});
+
+	/*Процедура сохранения ссылки*/
+	$("#save-link").on("click", function(){
+		if($("#link-text").val().length){
+			let a = document.createElement("a");
+			a.innerHTML = $("#link-text").val();
+			a.setAttribute("href", $("#link-input").val)
+			a.setAttribute("contentEditable", "false");
+			a.setAttribute("target", "_blank");
+  		linkRange.insertNode(a);
+		}
+		else{
+			let span = document.createElement("span");
+			span.innerHTML = linkSelection;
+			linkRange.insertNode(span);
+		}
+		$("#link-text").val("");
+		$("#link-input").val("");
+	});
+
+	/*Процедура отмены изменений создания ссылки*/
+	$("#close-link-modal").on("click", function(){
+		let span = document.createElement("span");
+		span.innerHTML = linkSelection;
+		linkRange.insertNode(span);
+		$("#link-text").val("");
+		$("#link-input").val("");
 	});
 
 	/*Процедура нажатия на кнопку "Добавить картинку"

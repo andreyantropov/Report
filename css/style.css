@@ -20,7 +20,12 @@ table{
 }
 
 .far{
-  font-size: 25px;
+  font-size: 20px;
+}
+
+.navbar{
+  margin: 0;
+  padding: 0;
 }
 
 .nav-item{
@@ -33,23 +38,6 @@ table{
   padding: 0;
   width: 0;
 }
-
-/*.sider {
-  height: 100%;
-  width: 20%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #343a40;
-  overflow-x: hidden;
-  padding-top: 20px;
-}
-
-.report-container{
-	float: right;
-	width: 80%;
-}*/
 
 .main-container{
 	margin: 1.5% 5%;

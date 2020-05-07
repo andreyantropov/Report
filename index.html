@@ -27,6 +27,7 @@
               <a class="dropdown-item" id = "create-header" href="#"><i class="fas fa-heading"></i>        Заголовок</a>
               <a class="dropdown-item" id = "create-subheader" href="#"><i class="fas fa-heading"></i>        Подзаголовок</a>
               <a class="dropdown-item" id = "create-list" href="#"><i class="fas fa-list-ul"></i>        Список</a>
+							<a href = "#linkModal" class="dropdown-item" id = "create-link" data-toggle = "modal"><i class="fas fa-at"></i>        Ссылка</a>
             </div>
           </li>
           <!-- Кнопка "Картинки" -->
@@ -164,6 +165,7 @@
 			<!-- Кнопка "Вверх" -->
 			<div id = "on-top">Вверх</div>
 		</footer>
+		<!-- Модальное окно с содержанием -->
 		<div id="contentModal" class="modal fade">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -174,6 +176,24 @@
 					<div class="modal-body" id = "content-modal-body"></div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Модальное окно создания ссылки -->
+		<div id="linkModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Создание ссылки</h4>
+					</div>
+					<div class="modal-body" id = "content-modal-body">
+						<input type="text" class="form-control" id="link-text" placeholder = "Текст">
+						<input type="text" class="form-control" id="link-input" placeholder = "Ссылка">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id = "save-link" data-dismiss="modal">Сохранить</button>
+						<button type="button" class="btn btn-default" id = "close-link-modal" data-dismiss="modal">Закрыть</button>
 					</div>
 				</div>
 			</div>
