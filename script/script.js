@@ -19,12 +19,6 @@ $(window).on("load", function(){
 	});
 	$("#background-color-select").css("background-color", $('#background-color-select option:selected').val());
 
-	/*Цвет фона ячейки*/
-	$("#cell-background-color-select option").each(function(){
-		$(this).css("background-color", $(this).val());
-	});
-	$("#cell-background-color-select").css("background-color", $('#cell-background-color-select option:selected').val());
-
 	/*Процедура нажатия на кнопку "Удалить"
 	Выводит окно подтверждения операции. Если пользователь
 	подтверждает удаление, то удаляет родительский элемент*/
@@ -139,11 +133,6 @@ $(window).on("load", function(){
 		$("#selectedCell").width($(this).val() + "px");
 	});
 
-	/*Процедура изменения цвета выбранных ячеек*/
-	$("#cell-background-color-select").on("change", function(){
-		$(".jq-cell-selected").css("background-color", $('#cell-background-color-select option:selected').val());
-	});
-
 	/*Процедура, устанавливающая автоматическую ширину ячеек*/
 	$("#autoCellWidth").on("click", function(){
 		if($(this).hasClass("active")){
@@ -158,21 +147,50 @@ $(window).on("load", function(){
 
 	/*Процедура, заменяющая стиль текста на выбранный пользователем*/
 	function styleString() {
-  	let range = window.getSelection().getRangeAt(0);
-  	let selectionContents = range.extractContents().textContent;
-		if(selectionContents == "")
-			selectionContents = " ";
-  	let span = document.createElement("span");
-		span.innerHTML = selectionContents;
-		span.style.fontFamily = $('#font-family-select option:selected').html();
-		span.style.fontSize = $('#font-size-select option:selected').html() + "px";
-		span.style.color = $('#text-color-select option:selected').val();
-		span.style.backgroundColor = $('#background-color-select option:selected').val();
-		$("#bold").hasClass("active") ? span.style.fontWeight = "bold" : span.style.fontWeight = "normal";
-		$("#cursive").hasClass("active") ? span.style.fontStyle = "italic" : span.style.fontStyle = "normal";
-		$("#underline").hasClass("active") ? span.style.textDecoration = "underline" : span.style.fontStyle = "none";
-  	range.insertNode(span);
+		//Если выбран текст
+		if(!$(".jq-cell-selected").length){
+  		let range = window.getSelection().getRangeAt(0);
+  		let selectionContents = range.extractContents().textContent;
+			if(selectionContents == "")
+				selectionContents = " ";
+  		let span = document.createElement("span");
+			span.innerHTML = selectionContents;
+			span.style.fontFamily = $('#font-family-select option:selected').html();
+			span.style.fontSize = $('#font-size-select option:selected').html() + "px";
+			span.style.color = $('#text-color-select option:selected').val();
+			span.style.backgroundColor = $('#background-color-select option:selected').val();
+			$("#bold").hasClass("active") ? span.style.fontWeight = "bold" : span.style.fontWeight = "normal";
+			$("#cursive").hasClass("active") ? span.style.fontStyle = "italic" : span.style.fontStyle = "normal";
+			$("#underline").hasClass("active") ? span.style.textDecoration = "underline" : span.style.fontStyle = "none";
+  		range.insertNode(span);
+		}
+		//Если выбрана таблица
+		else{
+			$(".jq-cell-selected").css("font-family", $('#font-family-select option:selected').html());
+			$(".jq-cell-selected").css("font-size", $('#font-size-select option:selected').html() + "px");
+			$(".jq-cell-selected").css("color", $('#text-color-select option:selected').val());
+			$(".jq-cell-selected").css("background-color", $('#background-color-select option:selected').val());
+			$("#bold").hasClass("active") ? $(".jq-cell-selected").css("font-weight", "bold") : $(".jq-cell-selected").css("font-weight", "normal");
+			$("#cursive").hasClass("active") ? $(".jq-cell-selected").css("font-style", "italic") : $(".jq-cell-selected").css("font-style", "normal");
+			$("#underline").hasClass("active") ? $(".jq-cell-selected").css("text-decoration", "underline") : $(".jq-cell-selected").css("text-decoration", "none");
+		}
 	}
+
+	/*Процедура, устанавливающая на панели инструментов параметры выделенного элемента*/
+	$(document).on("mouseup", function(e){
+		let $target = $(e.target);
+		if($target.is("p, span, .jq-cell-selected")){
+			$('#font-family-select').val($target.css("font-family"));
+			$('#font-size-select').val($target.css("font-size").slice(0, -2));
+			$target.css("font-style") == "italic" ? $("#cursive").addClass("active") : $("#cursive").removeClass("active");
+			$target.css("font-weight") == "700" ? $("#bold").addClass("active") : $("#bold").removeClass("active");
+			!$target.css("text-decoration").indexOf("underline") ? $("#underline").addClass("active") : $("#underline").removeClass("active");
+			$('#text-color-select').val($target.css("color"));
+			$('#text-color-select').css("background-color", $target.css("color"));
+			$('#background-color-select').val($target.css("background-color"));
+			$('#background-color-select').css("background-color", $target.css("background-color"));
+		}
+	});
 
 	/*Процедура, привязывающая к контейнеру общие сигналы*/
 	function containerEvents(){
@@ -372,7 +390,8 @@ $(window).on("load", function(){
 		$("*").not("#selectedTable td").removeClass("jq-cell-selected");
 		($("#selectedTable").css("table-layout") != "fixed") ? $("#autoCellWidth").addClass("active") : $("#autoCellWidth").removeClass("active");
 		$("#cellWidth").val($("#selectedCell").width());
-		$("#cell-background-color-select").val($("#selectedCell").css("background-color"));
+		$("#background-color-select").val($("#selectedCell").css("background-color"));
+		$("#background-color-select").css("background-color", $("#selectedCell").css("background-color"));
 	}
 
 	/*Процедура, добавляющая пользовательское выпадающее
@@ -421,7 +440,7 @@ $(window).on("load", function(){
 	/*Процедура, сбрасывающая выделенные ячейки таблицы при клике ЛКМ вне ее/контекстного меню/панели инструментов*/
 	$(document).on("mouseup", function(e){
 		if($("#selectedTable").has(e.target).length === 0 && $("#menu").has(e.target).length === 0
-	  && (".navber").has(e.target).length === 0){
+	  && (".navbar").has(e.target).length === 0){
 			$("#selectedTable").removeAttr("id");
 			$("#selectedCell").removeAttr("id");
 			$("#cellWidth").val("");
