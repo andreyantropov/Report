@@ -2,6 +2,14 @@ $(window).on("load", function(){
 	/*Глобальные переменные*/
 	let linkRange, linkSelection;
 
+	/*Функция рендера математических формул*/
+	MathJax.Hub.Config({
+		tex2jax:{
+			inlineMath: [['$','$'], ['\\(','\\)']],
+			skipTags: ["script","noscript","style","textarea","pre","code"]
+		}
+	});
+
 	/*Заполняем выпадающие меню*/
 	/*Заполняем выпадающее меню размера шрифта*/
 	for(let size = 1; size < 100; size++){
@@ -296,6 +304,31 @@ $(window).on("load", function(){
 				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
 				   "</div>" +
 				   "</div>");
+		//Добавляем прослушивание событий
+		containerEvents();
+		createDeleteButtonEventListener();
+	});
+
+	/*Процедура, отображающая в окне редактирования введенную пользователем формулу*/
+	$("#formula-input").on("keyup", function(){
+		$("#formula-output").text($(this).val());
+		MathJax.Hub.Typeset();
+	});
+
+	/*Процедура, вставляющая в документ блок с формулой*/
+	$("#save-formula").on("click", function(){
+		$("#last").removeAttr("id")
+			.after("<div class = 'main-container' id = 'last' style = 'text-align: " + $(".active").attr("id") + "'>" +
+				   "<div class = 'text-container col-12 col-sm-12 col-md-12 col-lg-12 col-lg-12'>" +
+				   $("#formula-output").clone().removeAttr("id").html() +
+				   "</div>" +
+				   "<div class = 'delete-button-container'>" +
+				   "<button type='button' class='btn btn-link up-button'><i class='fas fa-angle-up'></i></button>" +
+				   "<button type='button' class='btn btn-link down-button'><i class='fas fa-angle-down'></i></button>" +
+				   "<button type='button' class='btn btn-link delete-button'><i class='far fa-trash-alt'></i></button>" +
+				   "</div>" +
+				   "</div>");
+		//MathJax.Hub.Typeset();
 		//Добавляем прослушивание событий
 		containerEvents();
 		createDeleteButtonEventListener();
